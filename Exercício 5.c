@@ -1,45 +1,113 @@
-/*
-Exercício 5
-A empresa Compre+ decidiu dar um aumento de salário aos seus colaboradores e necessita 
-de um programa que calcule esses reajustes. Esse programa deve receber o salário de um 
-colaborador e fazer o reajuste seguindo os seguintes critérios, baseado no salário atual 
-informado
-*/
+// Exercício 5
 
 #include <stdio.h>
-int main( void )
-{
-    float salario;
-    float percentual;
-    float aumento;
-    float novoSalario; 
-    salario = 0;
-    percentual = 0;
-    aumento = 0;
-    novoSalario = 0;
-    printf("digite seu saláro atual: \n" );  
-    scanf("%f", &salario);  
-     while (salario < 0) {
-        printf("digite um saláro válido: \n" );
-        scanf("%f", &salario);  
+#include <unistd.h>
+
+int main(void) {
+    int opcao = 0;
+    float saldo = 1000.00;
+    float valor_transacao = 0.0;
+    int valor_saque = 0;
+    int notas_100 = 0, notas_50 = 0, notas_20 = 0, notas_10 = 0;
+    char continuar = 's';
+
+    while (1) {
+        printf("\n=== CAIXA ELETRÔNICO ===\n");
+        printf("[1] - Saldo\n");
+        printf("[2] - Saque\n");
+        printf("[3] - Depósito\n");
+        printf("[4] - Sair\n");
+        printf("Digite a opção desejada: ");
+        scanf("%d", &opcao);
+
+        if (opcao < 1 || opcao > 4) {
+            printf("\nOpção inválida! Escolha entre 1 e 4.\n");
+            sleep(2);
+            continue;
+        }
+
+        switch (opcao) {
+            case 1: {
+                char escolha = 's';
+                printf("\n--- CONSULTA DE SALDO ---\n");
+                printf("Seu saldo atual é: R$ %.2f\n\n", saldo);
+
+                printf("Deseja voltar ao menu principal? (s/n): ");
+                scanf(" %c", &escolha);
+
+                if (escolha == 'n' || escolha == 'N') {
+                    printf("\nDesligando o caixa eletrônico. Até logo!\n");
+                    return 0;
+                }
+                break; 
+            }
+            case 2:
+                continuar = 's';
+                while (continuar == 's' || continuar == 'S') {
+                    printf("\n--- OPERAÇÃO DE SAQUE ---\n");
+                    printf("Saldo disponível: R$ %.2f\n", saldo);
+                    printf("Digite o valor do saque (múltiplo de 10): R$ ");
+                    scanf("%d", &valor_saque);
+
+                    if (valor_saque <= 0) {
+                        printf("Erro: O valor do saque deve ser maior que zero!\n");
+                    } else if (valor_saque % 10 != 0) {
+                        printf("Erro: O caixa eletrônico possui apenas notas de R$ 10, 20, 50 e 100. O valor deve ser múltiplo de 10!\n");
+                    } else if (valor_saque > saldo) {
+                        printf("Erro: Saldo insuficiente para realizar esta operação!\n");
+                    } else {
+                        saldo -= valor_saque;
+
+                        notas_100 = valor_saque / 100;
+                        valor_saque %= 100;
+
+                        notas_50 = valor_saque / 50;
+                        valor_saque %= 50;
+
+                        notas_20 = valor_saque / 20;
+                        valor_saque %= 20;
+
+                        notas_10 = valor_saque / 10;
+                        valor_saque %= 10;
+
+                        printf("\nSaque realizado com sucesso! Cédulas entregues:\n");
+                        if (notas_100 > 0) printf("- Notas de R$ 100: %d\n", notas_100);
+                        if (notas_50 > 0)  printf("- Notas de R$ 50: %d\n", notas_50);
+                        if (notas_20 > 0)  printf("- Notas de R$ 20: %d\n", notas_20);
+                        if (notas_10 > 0)  printf("- Notas de R$ 10: %d\n", notas_10);
+                        printf("Novo saldo: R$ %.2f\n\n", saldo);
+                    }
+
+                    printf("Deseja realizar outro saque? (s/n): ");
+                    scanf(" %c", &continuar);
+                }
+                break;
+
+            case 3:
+                continuar = 's';
+                while (continuar == 's' || continuar == 'S') {
+                    printf("\n--- OPERAÇÃO DE DEPÓSITO ---\n");
+                    printf("Digite o valor do depósito: R$ ");
+                    scanf("%f", &valor_transacao);
+
+                    if (valor_transacao <= 0) {
+                        printf("Erro: O valor do depósito deve ser maior que zero!\n");
+                    } else {
+                        saldo += valor_transacao;
+                        printf("\nDepósito realizado com sucesso!\n");
+                        printf("Novo saldo: R$ %.2f\n\n", saldo);
+                    }
+
+                    printf("Deseja realizar outro depósito? (s/n): ");
+                    scanf(" %c", &continuar);
+                }
+                break;
+
+            case 4:
+                printf("\nSaindo do sistema. Obrigado por utilizar nosso caixa eletrônico!\n");
+                return 0;
+        }
     }
-    if (salario <= 250){     
-        percentual = 0.2; 
-        aumento = salario * percentual;
-    } else if (salario > 250 && salario < 900){     
-            percentual = 0.15; 
-            aumento = salario * percentual;
-        } else if (salario >= 900 && salario < 1500){  
-            percentual = 0.1;    
-            aumento = salario * percentual; 
-            } else{      
-                percentual = 0.05; 
-                aumento = salario * percentual;
-            }      
-    novoSalario = salario + aumento;
-    printf("Seu salário original: %.2f\n", salario);
-    printf("Percentual de aumento aplicado: %.0f%%\n", percentual * 100);
-    printf("O valor do aumento: %.2f\n", aumento);
-    printf("Novo salário: %.2f\n", novoSalario);
+
     return 0;
-    }
+}
